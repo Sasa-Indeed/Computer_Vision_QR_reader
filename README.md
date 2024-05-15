@@ -30,8 +30,24 @@ Based on the existence of the pattern in the corners, we apply the following rot
 - If the pattern exists in the fourth corner and top right only, we rotate the QR code by **270 degrees**.
 
 These rules ensure that the QR code is always presented in the correct orientation for further processing.
-## Reflection
-## Formate Info Validation
+
+# Format Information Correction and Validation
+
+This section outlines our approach to correcting and validating the format information in QR codes. Our method is designed to handle cases where the top left locator is damaged, which is a common issue in many test cases.
+
+## Reading Location Adjustment
+
+We have adjusted the location from where we read the format information. Instead of the usual location, we now read from the second location, which is beside the bottom locator (specifically column 8) and the top right locator (row 8). More details about the exact locations of the format information bits are provided in the code.
+
+## Damage Correction
+
+If the format information is damaged, we can correct it by performing a lookup of all 32 combinations of valid format information strings. The extended format information is acquired through the first 5 bits, which include 2 bits for the error correction level and 3 bits for the mask.
+
+## Validation Process
+
+If we get a perfect match with one of the 32 valid format information strings, then the format information is returned with no change. If not, we check to see the string that has the minimum Hamming distance from the string acquired from the image (the faulty one), and that string is returned instead.
+
+For more information about how the 32 valid format information strings were formed, please refer to the ISO/IEC 18004:2015 standard on Automatic Identification and Data Capture Techniques — QR Code bar code symbology specification. This standard provides a comprehensive guide to the structure and encoding of QR codes.
 # Decoding Alphanumeric V1 QR Codes
 
 This section outlines our method for decoding alphanumeric V1 QR codes. The process involves reading the data in a specific order, checking the encoding, and converting binary data to alphanumeric characters.
