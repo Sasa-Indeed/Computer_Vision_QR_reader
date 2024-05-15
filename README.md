@@ -20,8 +20,7 @@ Once again we test for the average but this time the average of the image pixel 
 Now that we have applied all the fixes that we have, it's time to make sure the image is binary via thresholding, we choose 100 because at this point we are sure that the important parts of the QR code are almost perfectly black meaning near zero and we want anything that is not strongly black to be white so we choose 100.
 ## Capturing the good part!
 Based on the fact that (after thresholding) Most of the QR code body will be black while the rest of the image is white, If the QR code resides in a small part of the image then its surroundings are white, the detection algorithm needs the QR code to take most of the space in the image (to be able to detect edges and corners clearly) so we need to cut the useless giant white border around the 
-## detecting QR Code Frame
-## 
+## detecting QR Code Frame 
 # QR Code Orientation Detection
 
 Our approach to detecting the orientation of a QR code is based on the unique pattern of the locator boxes, which follows a 1:1:3:1:1 ratio. This pattern allows us to determine whether the QR code is rotated or in its correct orientation.
