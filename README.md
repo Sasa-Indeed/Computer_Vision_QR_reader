@@ -92,6 +92,33 @@ This process is similar to saying that 78 equals 7 * 10 + 8. If we're encoding a
 
 If the length of the data is odd, the last character is read using only 6 bits. This is because we normally decrement the length by two for each pair of characters read. Therefore, if the length is 1, it indicates that the original length was odd.
 
-## V4
+# Decoding Version 4 QR Codes
+
+This section outlines our approach to decoding Version 4 QR codes. The process involves adding more directions, reading the data in a specific order, and converting binary data to ASCII characters.
+
+## Adding Directions
+
+The first step in decoding Version 4 QR codes is to add more directions that are suitable for higher-order versions of QR codes. This ensures that we can accurately navigate and read the data in these more complex codes.
+
+## Reading Data
+
+Next, we proceed to read the data by applying the data indices that are specific to a Version 4 QR code. This includes specifying the row, column, and direction in which each data byte should be read. This step is crucial for ensuring that we correctly interpret the data in the QR code.
+
+## Concatenating Bytes
+
+After reading the data, we concatenate all the bytes to form a single binary string. From this string, we exclude the encoding bits and the length.
+
+## Binary to ASCII Conversion
+
+Finally, we read the binary string 8 bits at a time, converting each 8-bit segment to an integer and then to an ASCII character. This step transforms the binary data into a human-readable format.
+
+By following these steps, we can accurately decode Version 4 QR codes, regardless of their complexity or orientation. This method ensures that the QR code data is always presented in the correct format for further processing.
 
 # References
+- [ISO IEC 18004 2015 Standard](https://raw.githubusercontent.com/yansikeim/QR-Code/master/ISO%20IEC%2018004%202015%20Standard.pdf)
+- [Module Placement Matrix](https://www.thonky.com/qr-code-tutorial/module-placement-matrix#:~:text=The%20timing%20patterns%20are%20two,QR%20code%20between%20the%20separators)
+- [Alphanumeric Table](https://www.thonky.com/qr-code-tutorial/alphanumeric-table)
+- [Data Encoding](https://www.thonky.com/qr-code-tutorial/data-encoding)
+- [Error Correction Coding](https://www.thonky.com/qr-code-tutorial/error-correction-coding)
+- [Format Version Information](https://www.thonky.com/qr-code-tutorial/format-version-information#:~:text=format%20string%20table.-,Generate%20the%20Format%20String,generate%20ten%20error%20correction%20bits.)
+
