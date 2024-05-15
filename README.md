@@ -98,7 +98,8 @@ If the length of the data is odd, the last character is read using only 6 bits. 
 
 # Decoding Version 4 QR Codes
 
-![image](https://github.com/Sasa-Indeed/Computer_Vision_QR_reader/assets/105253730/e4bb62d8-a880-4414-8ed6-865ba01157f7)
+![image](https://github.com/Sasa-Indeed/Computer_Vision_QR_reader/assets/105253730/8f4557d8-dc22-460f-8631-050fced9b983)
+from the image above we figured out the new directions we needed to decode higher versions
 
 
 This section outlines our approach to decoding Version 4 QR codes. The process involves adding more directions, reading the data in a specific order, and converting binary data to ASCII characters.
