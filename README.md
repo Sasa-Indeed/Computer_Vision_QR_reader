@@ -23,6 +23,8 @@ Based on the fact that (after thresholding) Most of the QR code body will be bla
 ## detecting QR Code Frame 
 # QR Code Orientation Detection
 
+![image](https://github.com/Sasa-Indeed/Computer_Vision_QR_reader/assets/105253730/6954d6ac-4c42-4bf8-a343-cd2d86642dc8)
+
 Our approach to detecting the orientation of a QR code is based on the unique pattern of the locator boxes, which follows a 1:1:3:1:1 ratio. This pattern allows us to determine whether the QR code is rotated or in its correct orientation.
 
 ## Methodology
@@ -95,6 +97,9 @@ This process is similar to saying that 78 equals 7 * 10 + 8. If we're encoding a
 If the length of the data is odd, the last character is read using only 6 bits. This is because we normally decrement the length by two for each pair of characters read. Therefore, if the length is 1, it indicates that the original length was odd.
 
 # Decoding Version 4 QR Codes
+
+![image](https://github.com/Sasa-Indeed/Computer_Vision_QR_reader/assets/105253730/e4bb62d8-a880-4414-8ed6-865ba01157f7)
+
 
 This section outlines our approach to decoding Version 4 QR codes. The process involves adding more directions, reading the data in a specific order, and converting binary data to ASCII characters.
 
