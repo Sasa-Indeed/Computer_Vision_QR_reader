@@ -21,8 +21,43 @@ Once again we test for the average but this time the average of the image pixel 
 ## Making sure the images are binary
 Now that we have applied all the fixes that we have, it's time to make sure the image is binary via thresholding, we choose 100 because at this point we are sure that the important parts of the QR code are almost perfectly black meaning near zero and we want anything that is not strongly black to be white so we choose 100.
 ## Capturing the good part!
-Based on the fact that (after thresholding) Most of the QR code body will be black while the rest of the image is white, If the QR code resides in a small part of the image then its surroundings are white, the detection algorithm needs the QR code to take most of the space in the image (to be able to detect edges and corners clearly) so we need to cut the useless giant white border around the 
-## detecting QR Code Frame 
+Based on the fact that (after thresholding) Most of the QR code body will be black while the rest of the image is white, If the QR code resides in a small part of the image then its surroundings are white, the detection algorithm needs the QR code to take most of the space in the image (to be able to detect edges and corners clearly) so we need to cut the useless giant white border around the QR code.
+1- Perform closing with small kernel (10x10 as smaller will be ineffective and larger will erase the QR code itself it it is small in the image) to fill any black noise outside the QR code (shadows and such)
+2- Find the first black pixel in each row and column and crop the image to the smallest rectangle that contains all the black pixels.
+3.1- If the borders are close to the image original borders (The threshold is 80% to represent that the QR code is dominating the image) then no need for capturing, the QR is already filling the image.
+3.2- Else, crop the image while adding a margin to work like a quiet zone for the QR code.
+4- Resize the image to its original size.
+## Tilt Correction
+This will work on images that just needs slight rotation (no prespective)
+1- Find the angle of rotation needed to make the QR code horizontal: we calculate the angle of the line connecting the top left and top right corners of the QR code with the horizontal line.
+1.1- Perform Canny edge detection on the blob image: upper and lower thresholds are 50 and 150 respectively, this was fine-tuned so that only the 4 main edges of the QR code (and any big noises) are detected and any other noises (from inclined edges having zigzag effect) are considered weak edges and are not detected.
+1.2- Perform Hough Line Transform on the Canny image: we set the threshold to 70 which barely captures weak edges, any lower, and it will start capturing noisy edges, any higher, and it may fail to capture the real edges.
+1.3- If more than 130 angles found this means the image tilting can't be corrected here or it needs straightening: later step.
+1-4- filter the edges that should have angle of 0 (or 180) (between -45 and 45 and between 135 and 225)
+1.5- Calculate median of the angles found, this will have general approximation of the angle of the QR code as noises will cansel each other (similar to the concept of salt and pepper).
+2- If the angle is less than 5 degrees, then no need for rotation as it can be tolerated by the decoder.
+3- Rotate the image by the calculated angle.
+## detecting QR Code Frame
+In this step we find the frame of the QR code and stretching it into a square shape covering the whole image if needed.
+1- Pad the image with white border (big kernel but not big enough to revert the capturing stage), this is to make sure after all previous steps the QR code is not near the border.
+2- Do opening on the padded image with large kernel (100x100): this will fill the white blocks inside the QR code and transform the QR code into a single black blob.
+Why did we do that? because we want to detect the 4 corners of the QR code and this is ineffective since the QR code modules (small boxes composing it) are full of corners! that's why we need to make the QR code a single black blob so that its real corners are more visible and the other fake corners inside it vanish (that justifies the 100x100 padding so that opening doesn't cause the QR code to kill the quiet zone).
+Both Harris Corner detection and Contour detection failed to detect the corners of the QR code, the reason is that even after making the QR code one big black blob, if the QR code edges are inclined then the resulting blob will not be a smooth square (thus fake corners not entirely eradicated), so we had to come up with a new method to detect the corners of the QR code.
+3- Perform Canny edge detection on the blob image: upper and lower thresholds are 200 and 100 respectively, this was fine-tuned so that only the 4 main edges of the QR code (and any big noises) are detected and any other noises (from inclined edges having zigzag effect) are considered weak edges and are not detected.
+4- Perform Hough Line Transform on the Canny image: we set the threshold to 100 which barely captures weak edges (like those of BANANAAA), any lower, and it will start capturing noisy edges, any higher, and it may fail to capture the real edges.
+5- Find the lines that make the least difference in angel with 0 and 90 degrees: As the earlier steps might produce many borders for inclined and zoomed QR codes, we need to filter out the fake borders and keep the real ones, so we calculate the angle of each line with 0 and 90 degrees and keep the ones that are the closest to these angles.
+![img.png](img.png)
+Now we got 4 clear lines that represent the QR code frame, but they are not the corners of the QR code, they are the lines that the corners lie on, so we need to find the corners themselves.
+6- Harris Corner detection: we perform Harris Corner detection on the Canny image with a small block size (3) and a small ksize (3), this will detect the corners of the QR code, the parameters won't make a big difference here, we already preprocessed the image very well.
+7- Filter the found corners: remove corners that are:
+7.1- Weak corners: corners that have a low response value (less than 0.5 of the maximum response value, this value was fine-tuned to filter out the fake corners and keep the real ones that may be weaker than the strongest of them).
+7.2- Close corners: corners that are too close to each other (in the same quarter), this is to filter out multiple corners generated from a single corner spanning on multiple pixels.
+8- Sort found corners in the order: top left, top right, bottom left, bottom right.
+9- Find if the QR code needs straightening: if the any corner is farther than 200 pixels (this threshold means lines making more than 10 degrees difference from 0/90) from the edge of the image (even after capturing) this means that corners are likely not forming horizontal/vertical lines with each other as the other cornerl will be really close to the edge (around 100 pixel difference), thus needs straightening.
+10- Straighten the QR code: if the QR code needs straightening, we rotate the image so that the corners are horizontal/vertical with each other.
+11- Resize into 1050 x 1050: which is 50x21 x 50x21, 50x50 modules and 21x21 pixels per module.
+Long process but never failed with the 19 TCs we tested on.
+
 # QR Code Orientation Detection
 
 ![image](https://github.com/Sasa-Indeed/Computer_Vision_QR_reader/assets/105253730/6954d6ac-4c42-4bf8-a343-cd2d86642dc8)
