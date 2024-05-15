@@ -43,6 +43,8 @@ These rules ensure that the QR code is always presented in the correct orientati
 
 # Format Information Correction and Validation
 
+![image](https://github.com/Sasa-Indeed/Computer_Vision_QR_reader/assets/105253730/5143b9b7-f80d-4262-a2fa-456f2edcb1b5)
+
 This section outlines our approach to correcting and validating the format information in QR codes. Our method is designed to handle cases where the top left locator is damaged, which is a common issue in many test cases.
 
 ## Reading Location Adjustment
