@@ -70,6 +70,9 @@ We focus on the fourth corner of the QR code. If the unique pattern exists in bo
 
 To account for potential variations, we have incorporated a tolerance margin. We check the mean of the values in a single grid cell and consider the pattern to exist if the corresponding value from the pattern matches that of the grid cells we check.
 
+## Reflection
+The problem with reflection on y-axis is that we need to differentiate between it and 90-degree rotation, one solution would be to rotate the image by 90 degrees, and check the FEC data on the top left and right locators, if they match then it was rotated by 90 degrees if not invert the rotation and try reflecting it on the y-axis if they match then it was reflected if not then the FEC might be corrupted or the ECL or the MASK are corrupted.  
+
 ## Rotation Rules
 
 Based on the existence of the pattern in the corners, we apply the following rotation rules:
