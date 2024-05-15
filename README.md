@@ -5,7 +5,9 @@ The goal of the project is to be able to decode given samples of QR codes with a
 
 # Video
 
-![]()
+
+https://github.com/Sasa-Indeed/Computer_Vision_QR_reader/assets/28220731/e9f30acc-2742-4c42-90c5-67dd6352263e
+
 
 # Our Approach
 ## Skewed Image histograms
